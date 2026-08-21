@@ -58,4 +58,77 @@ class SpotifyService
         return $response->toArray();
     }
 
+    public function getPlaylist(
+        string $playlistId,
+        string $accessToken
+    ): array {
+        $response = $this->httpClient->request(
+            'GET',
+            'https://api.spotify.com/v1/playlists/' . $playlistId,
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                ],
+            ]
+        );
+
+        return $response->toArray();
+    }
+
+    public function getUserPlaylists(string $accessToken): array
+    {
+        $response = $this->httpClient->request(
+            'GET',
+            'https://api.spotify.com/v1/me/playlists',
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                ],
+                'query' => [
+                    'limit' => 50,
+                ],
+            ]
+        );
+
+        return $response->toArray();
+    }
+
+    public function getPlaylistTracks(
+        string $playlistId,
+        string $accessToken
+    ): array {
+        $allTracks = [];
+        $offset = 0;
+        $limit = 50;
+
+        do {
+            $response = $this->httpClient->request(
+                'GET',
+                'https://api.spotify.com/v1/playlists/' . $playlistId . '/items',
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $accessToken,
+                    ],
+                    'query' => [
+                        'limit' => $limit,
+                        'offset' => $offset,
+                    ],
+                ]
+            );
+
+            $data = $response->toArray();
+
+            foreach ($data['items'] ?? [] as $item) {
+                if ($item !== null) {
+                    $allTracks[] = $item;
+                }
+            }
+
+            $offset += $limit;
+
+        } while (!empty($data['next']));
+
+        return $allTracks;
+    }
+
 }

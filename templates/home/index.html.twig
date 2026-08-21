@@ -5,6 +5,47 @@
 {% block body %}
     <h1>SpotiTest</h1>
 
+    {% if spotifyConnected %}
+        <p>Connected to Spotify</p>
+
+        <a href="{{ path('spotify_logout') }}">
+            Logout
+        </a>
+
+        <h2>Your Playlists</h2>
+
+        {% for playlist in userPlaylists %}
+            <div>
+                {% if playlist.images is not empty %}
+                    <img
+                        src="{{ playlist.images[0].url }}"
+                        width="150"
+                        alt="{{ playlist.name }}"
+                    >
+                {% endif %}
+
+                <h3>
+                    <a href="{{ path('playlist_show', {id: playlist.id}) }}">
+                        {{ playlist.name }}
+                    </a>
+                </h3>
+
+                {% if playlist.items is defined %}
+                    <p>{{ playlist.items.total }} songs</p>
+                {% endif %}
+            </div>
+        {% else %}
+            <p>No playlists found.</p>
+        {% endfor %}
+
+    {% else %}
+        <a href="{{ path('spotify_login') }}">
+            Login with Spotify
+        </a>
+    {% endif %}
+
+    <br><br>
+
     <input
         id="playlist-search"
         type="text"
