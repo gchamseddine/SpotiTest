@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Service\SpotifyService;
 
 class SpotifyAuthController extends AbstractController
 {
@@ -118,17 +119,32 @@ class SpotifyAuthController extends AbstractController
     }
 
     #[Route('/auth/spotify/token', name: 'spotify_token')]
-    public function token(SessionInterface $session): Response
-    {
-        if (!$session->has('spotify_access_token')) {
+    public function token(
+        SessionInterface $session,
+        SpotifyService $spotify
+    ): Response {
+        if (!$session->has('spotify_refresh_token')) {
             return $this->json([
                 'error' => 'Not authenticated',
             ], 401);
         }
 
-        return $this->json([
-            'access_token' => $session->get('spotify_access_token'),
-        ]);
+        try {
+            $accessToken =
+                $spotify->getValidAccessToken($session);
+
+            return $this->json([
+                'access_token' => $accessToken,
+            ]);
+
+        } catch (\Throwable $e) {
+
+            $session->invalidate();
+
+            return $this->json([
+                'error' => 'Spotify session expired',
+            ], 401);
+        }
     }
 
 }

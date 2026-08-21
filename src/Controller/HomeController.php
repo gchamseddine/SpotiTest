@@ -19,7 +19,7 @@ class HomeController extends AbstractController
         $playlists = [];
 
         if ($spotifyConnected) {
-            $accessToken = $session->get('spotify_access_token');
+            $accessToken = $spotify->getValidAccessToken($session);
 
             $data = $spotify->getUserPlaylists($accessToken);
 

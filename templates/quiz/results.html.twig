@@ -50,7 +50,24 @@
 
     <br>
 
-    <a href="/">
+    <form
+        action="{{ path('quiz_retry') }}"
+        method="post"
+        style="display: inline;"
+    >
+        <button type="submit">
+            Retry
+        </button>
+    </form>
+
+    <a href="{{ path(
+        'playlist_show',
+        {id: game.playlistId}
+    ) }}">
+        Back to Playlist
+    </a>
+
+    <a href="{{ path('home') }}">
         Back to Home
     </a>
 

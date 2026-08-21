@@ -20,7 +20,7 @@ class PlaylistController extends AbstractController
             return $this->redirectToRoute('spotify_login');
         }
 
-        $accessToken = $session->get('spotify_access_token');
+        $accessToken = $spotify->getValidAccessToken($session);
 
         $playlist = $spotify->getPlaylist(
             $id,

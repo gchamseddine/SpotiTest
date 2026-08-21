@@ -3,59 +3,13 @@
 namespace App\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SpotifyService
 {
     public function __construct(
         private HttpClientInterface $httpClient,
     ) {
-    }
-
-    public function getAccessToken(): string
-    {
-        $clientId = $_ENV['SPOTIFY_CLIENT_ID'];
-        $clientSecret = $_ENV['SPOTIFY_CLIENT_SECRET'];
-
-        $response = $this->httpClient->request(
-            'POST',
-            'https://accounts.spotify.com/api/token',
-            [
-                'headers' => [
-                    'Authorization' => 'Basic ' . base64_encode($clientId . ':' . $clientSecret),
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                ],
-                'body' => [
-                    'grant_type' => 'client_credentials',
-                ],
-            ]
-        );
-
-
-        $data = $response->toArray();
-
-        return $data['access_token'];
-    }
-
-    public function searchPlaylists(string $query): array
-    {
-        $token = $this->getAccessToken();
-
-        $response = $this->httpClient->request(
-            'GET',
-            'https://api.spotify.com/v1/search',
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
-                ],
-                'query' => [
-                    'q' => $query,
-                    'type' => 'playlist',
-                    'limit' => 10,
-                ],
-            ]
-        );
-
-        return $response->toArray();
     }
 
     public function getPlaylist(
@@ -131,5 +85,83 @@ class SpotifyService
         return $allTracks;
     }
 
+    public function refreshAccessToken(string $refreshToken): array
+    {
+        $response = $this->httpClient->request(
+            'POST',
+            'https://accounts.spotify.com/api/token',
+            [
+                'headers' => [
+                    'Authorization' => 'Basic ' . base64_encode(
+                            $_ENV['SPOTIFY_CLIENT_ID']
+                            . ':'
+                            . $_ENV['SPOTIFY_CLIENT_SECRET']
+                        ),
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'body' => [
+                    'grant_type' => 'refresh_token',
+                    'refresh_token' => $refreshToken,
+                ],
+            ]
+        );
+
+        return $response->toArray();
+    }
+
+    public function getValidAccessToken(
+        SessionInterface $session
+    ): string {
+        $accessToken = $session->get('spotify_access_token');
+
+        $expiresAt = $session->get(
+            'spotify_token_expires_at',
+            0
+        );
+
+        // Still valid. The 60-second buffer prevents us
+        // from using a token that's about to expire.
+        if (
+            $accessToken &&
+            time() < $expiresAt - 60
+        ) {
+            return $accessToken;
+        }
+
+        $refreshToken =
+            $session->get('spotify_refresh_token');
+
+        if (!$refreshToken) {
+            throw new \RuntimeException(
+                'Spotify session expired.'
+            );
+        }
+
+        $tokens =
+            $this->refreshAccessToken($refreshToken);
+
+        $session->set(
+            'spotify_access_token',
+            $tokens['access_token']
+        );
+
+        $session->set(
+            'spotify_token_expires_at',
+            time() + $tokens['expires_in']
+        );
+
+        /*
+         * Spotify might return a new refresh token.
+         * If it doesn't, keep the existing one.
+         */
+        if (isset($tokens['refresh_token'])) {
+            $session->set(
+                'spotify_refresh_token',
+                $tokens['refresh_token']
+            );
+        }
+
+        return $tokens['access_token'];
+    }
 
 }
