@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Results - SpotiTest{% endblock %}
+
+{% block body %}
+
+    <h1>Quiz Complete!</h1>
+
+    <h2>
+        Score: {{ game.score }} / {{ game.maxScore }}
+    </h2>
+
+    {% for result in game.results %}
+
+        <hr>
+
+        <h3>Round {{ loop.index }}</h3>
+
+        {% if game.guessMode == 'both'
+            or game.guessMode == 'title' %}
+
+            <p>
+                <strong>Song:</strong>
+
+                {% if result.titleCorrect %}
+                    Correct ✓
+                {% else %}
+                    {{ result.title }}
+                {% endif %}
+            </p>
+
+        {% endif %}
+
+        {% if game.guessMode == 'both'
+            or game.guessMode == 'artist' %}
+
+            <p>
+                <strong>Artist:</strong>
+
+                {% if result.artistCorrect %}
+                    Correct ✓
+                {% else %}
+                    {{ result.artists|join(', ') }}
+                {% endif %}
+            </p>
+
+        {% endif %}
+
+    {% endfor %}
+
+    <br>
+
+    <a href="/">
+        Back to Home
+    </a>
+
+{% endblock %}

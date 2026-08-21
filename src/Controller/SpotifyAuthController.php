@@ -92,17 +92,14 @@ class SpotifyAuthController extends AbstractController
 
         $tokens = $response->toArray();
 
-        $session->set(
-            'spotify_access_token',
-            $tokens['access_token']
-        );
+        $session->migrate(true);
 
-        if (isset($tokens['refresh_token'])) {
-            $session->set(
-                'spotify_refresh_token',
-                $tokens['refresh_token']
-            );
-        }
+        $session->set('spotify_access_token', $tokens['access_token']);
+
+        $session->set(
+            'spotify_refresh_token',
+            $tokens['refresh_token'] ?? null
+        );
 
         $session->set(
             'spotify_token_expires_at',
@@ -115,12 +112,23 @@ class SpotifyAuthController extends AbstractController
     #[Route('/auth/spotify/logout', name: 'spotify_logout')]
     public function logout(SessionInterface $session): Response
     {
-        $session->remove('spotify_access_token');
-        $session->remove('spotify_refresh_token');
-        $session->remove('spotify_token_expires_at');
-        $session->remove('spotify_oauth_state');
+        $session->invalidate();
 
         return $this->redirectToRoute('home');
+    }
+
+    #[Route('/auth/spotify/token', name: 'spotify_token')]
+    public function token(SessionInterface $session): Response
+    {
+        if (!$session->has('spotify_access_token')) {
+            return $this->json([
+                'error' => 'Not authenticated',
+            ], 401);
+        }
+
+        return $this->json([
+            'access_token' => $session->get('spotify_access_token'),
+        ]);
     }
 
 }

@@ -6,6 +6,12 @@
 
 {% block body %}
 
+    {% for message in app.flashes('error') %}
+        <p>
+            {{ message }}
+        </p>
+    {% endfor %}
+
     <a href="/">← Back</a>
 
     <br><br>
@@ -22,8 +28,92 @@
 
     <p>{{ totalSongs }} songs</p>
 
-    <button type="button">
-        Start Quiz
-    </button>
+    <h2>Game Settings</h2>
+
+    <form method="POST"
+          action="{{ path('quiz_start', {id: playlist.id}) }}">
+
+        <div>
+            <label for="rounds">Number of rounds</label>
+
+            <input
+                type="number"
+                id="rounds"
+                name="rounds"
+                value="10"
+                min="1"
+                max="{{ totalSongs }}"
+                required
+            >
+
+            <p>Maximum: {{ totalSongs }}</p>
+        </div>
+
+        <div>
+            <label for="clipLength">Clip length</label>
+
+            <input
+                type="range"
+                id="clipLength"
+                name="clipLength"
+                min="5"
+                max="30"
+                value="30"
+                step="5"
+            >
+
+            <span id="clipLengthValue">30 seconds</span>
+        </div>
+
+        <div>
+            <p>Guess</p>
+
+            <label>
+                <input
+                    type="radio"
+                    name="guessMode"
+                    value="both"
+                    checked
+                >
+                Both
+            </label>
+
+            <label>
+                <input
+                    type="radio"
+                    name="guessMode"
+                    value="artist"
+                >
+                Artist
+            </label>
+
+            <label>
+                <input
+                    type="radio"
+                    name="guessMode"
+                    value="title"
+                >
+                Title
+            </label>
+        </div>
+
+        <br>
+
+        <button type="submit">
+            Start Quiz
+        </button>
+
+    </form>
+
+    <script>
+        const clipLength = document.getElementById('clipLength');
+        const clipLengthValue =
+            document.getElementById('clipLengthValue');
+
+        clipLength.addEventListener('input', function () {
+            clipLengthValue.textContent =
+                this.value + ' seconds';
+        });
+    </script>
 
 {% endblock %}
