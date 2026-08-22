@@ -30,9 +30,9 @@
                     </a>
                 </h3>
 
-                {% if playlist.items is defined %}
-                    <p>{{ playlist.items.total }} songs</p>
-                {% endif %}
+                <p>
+                    {{ playlist.usableTracks }} songs
+                </p>
             </div>
         {% else %}
             <p>No playlists found.</p>

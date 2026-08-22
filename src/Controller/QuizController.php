@@ -29,7 +29,7 @@ class QuizController extends AbstractController
         $accessToken =
             $spotify->getValidAccessToken($session);
 
-        $playlistItems = $spotify->getPlaylistTracks(
+        $playlistItems = $spotify->getUsablePlaylistTracks(
             $id,
             $accessToken
         );
@@ -523,7 +523,7 @@ class QuizController extends AbstractController
             );
 
         $playlistItems =
-            $spotify->getPlaylistTracks(
+            $spotify->getUsablePlaylistTracks(
                 $results['playlistId'],
                 $accessToken
             );
@@ -626,7 +626,8 @@ class QuizController extends AbstractController
                 !$track ||
                 empty($track['id']) ||
                 empty($track['uri']) ||
-                empty($track['name'])
+                empty($track['name']) ||
+                ($track['is_playable'] ?? true) === false
             ) {
                 continue;
             }

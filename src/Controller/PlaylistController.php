@@ -27,7 +27,7 @@ class PlaylistController extends AbstractController
             $accessToken
         );
 
-        $tracks = $spotify->getPlaylistTracks(
+        $tracks = $spotify->getUsablePlaylistTracks(
             $id,
             $accessToken
         );

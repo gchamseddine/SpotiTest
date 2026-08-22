@@ -23,9 +23,21 @@ class HomeController extends AbstractController
 
             $data = $spotify->getUserPlaylists($accessToken);
 
-            $playlists = array_filter(
-                $data['items'] ?? []
-            );
+            $playlists = [];
+
+            foreach ($data['items'] ?? [] as $playlist) {
+                if (!$playlist) {
+                    continue;
+                }
+
+                $playlist['usableTracks'] =
+                    $spotify->getUsablePlaylistTrackCount(
+                        $playlist['id'],
+                        $accessToken
+                    );
+
+                $playlists[] = $playlist;
+            }
         }
 
         return $this->render('home/index.html.twig', [

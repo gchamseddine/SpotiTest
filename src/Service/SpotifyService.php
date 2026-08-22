@@ -66,6 +66,7 @@ class SpotifyService
                     'query' => [
                         'limit' => $limit,
                         'offset' => $offset,
+                        'market' => 'from_token',
                     ],
                 ]
             );
@@ -83,6 +84,95 @@ class SpotifyService
         } while (!empty($data['next']));
 
         return $allTracks;
+    }
+
+    public function getUsablePlaylistTracks(
+        string $playlistId,
+        string $accessToken
+    ): array {
+        $items = $this->getPlaylistTracks(
+            $playlistId,
+            $accessToken
+        );
+
+        $usableTracks = [];
+
+        foreach ($items as $item) {
+            if (($item['is_local'] ?? false) === true) {
+                continue;
+            }
+
+            $track = $item['item'] ?? null;
+
+            if (
+                !$track ||
+                empty($track['id']) ||
+                empty($track['uri']) ||
+                empty($track['name']) ||
+                ($track['is_playable'] ?? true) === false
+            ) {
+                continue;
+            }
+
+            $usableTracks[] = $item;
+        }
+
+        return $usableTracks;
+    }
+
+    public function getUsablePlaylistTrackCount(
+        string $playlistId,
+        string $accessToken
+    ): int {
+        $usableCount = 0;
+        $offset = 0;
+        $limit = 50;
+
+        do {
+            $response = $this->httpClient->request(
+                'GET',
+                'https://api.spotify.com/v1/playlists/' . $playlistId . '/items',
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $accessToken,
+                    ],
+                    'query' => [
+                        'limit' => $limit,
+                        'offset' => $offset,
+                        'market' => 'from_token',
+
+                        // Only request what we need for counting.
+                        'fields' => 'items(is_local,item(id,is_playable)),next',
+                    ],
+                ]
+            );
+
+            $data = $response->toArray();
+
+            foreach ($data['items'] ?? [] as $item) {
+
+                if (($item['is_local'] ?? false) === true) {
+                    continue;
+                }
+
+                $track = $item['item'] ?? null;
+
+                if (
+                    !$track ||
+                    empty($track['id']) ||
+                    ($track['is_playable'] ?? true) === false
+                ) {
+                    continue;
+                }
+
+                $usableCount++;
+            }
+
+            $offset += $limit;
+
+        } while (!empty($data['next']));
+
+        return $usableCount;
     }
 
     public function refreshAccessToken(string $refreshToken): array

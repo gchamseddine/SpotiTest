@@ -60,7 +60,7 @@
     <script>
         let spotifyPlayer;
         let spotifyDeviceId;
-        let countdownInterval;
+        let countdownInterval = null;
 
         let titleSolved = false;
         let artistSolved = false;
@@ -74,6 +74,8 @@
 
         let currentRound =
             {{ round }};
+
+        let roundVersion = 0;
 
         const timer = document.getElementById('timer');
         const answers = document.getElementById('answers');
@@ -145,6 +147,9 @@
                 'authentication_error',
                 ({ message }) => {
                     console.error(message);
+
+                    status.textContent =
+                        'Your Spotify session expired. Please reconnect Spotify.';
                 }
             );
 
@@ -153,6 +158,9 @@
                 'account_error',
                 ({ message }) => {
                     console.error(message);
+
+                    status.textContent =
+                        'Spotify Premium is required for playback.';
                 }
             );
 
@@ -161,6 +169,9 @@
                 'playback_error',
                 ({ message }) => {
                     console.error(message);
+
+                    status.textContent =
+                        'Spotify could not play this song. You can skip it.';
                 }
             );
 
@@ -171,9 +182,18 @@
 
         async function startRound() {
 
+            // Give this round its own version number.
+            const thisRound = ++roundVersion;
+
             roundEnded = false;
             titleSolved = false;
             artistSolved = false;
+
+            // Make absolutely sure an older timer is gone.
+            if (countdownInterval !== null) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
 
             timer.textContent =
                 clipLength + ' seconds';
@@ -191,7 +211,9 @@
                 artistStatus.textContent = 'Artist: ?';
             }
 
-            skipButton.disabled = false;
+            // Don't allow skipping while Spotify is still
+            // preparing this round.
+            skipButton.disabled = true;
             skipButton.style.display = 'block';
 
             answers.style.display = 'block';
@@ -200,6 +222,12 @@
 
             const token =
                 await getSpotifyToken();
+
+            // The user may have already moved to another
+            // round while we were waiting for the token.
+            if (thisRound !== roundVersion) {
+                return;
+            }
 
             const response = await fetch(
                 'https://api.spotify.com/v1/me/player/play'
@@ -224,34 +252,55 @@
                 }
             );
 
-            if (!response.ok) {
-                status.textContent =
-                    'Could not start Spotify playback.';
+            // Again, make sure this is still the active round.
+            if (thisRound !== roundVersion) {
                 return;
             }
 
-            startCountdown();
+            if (!response.ok) {
+                status.textContent =
+                    'Could not start Spotify playback.';
+
+                skipButton.disabled = false;
+
+                return;
+            }
+
+            skipButton.disabled = false;
+
+            startCountdown(thisRound);
         }
 
 
-        function startCountdown() {
+        function startCountdown(thisRound) {
+
+            if (countdownInterval !== null) {
+                clearInterval(countdownInterval);
+            }
 
             let secondsLeft = clipLength;
 
             timer.textContent =
                 secondsLeft + ' seconds';
 
-
             countdownInterval = setInterval(
                 async () => {
+
+                    // This timer belongs to an old round.
+                    if (thisRound !== roundVersion) {
+                        clearInterval(countdownInterval);
+                        return;
+                    }
 
                     secondsLeft--;
 
                     timer.textContent =
                         secondsLeft + ' seconds';
 
-
                     if (secondsLeft <= 0) {
+
+                        clearInterval(countdownInterval);
+                        countdownInterval = null;
 
                         timer.textContent = 'Time up!';
 
@@ -386,8 +435,12 @@
             }
 
             roundEnded = true;
+            roundVersion++;
 
-            clearInterval(countdownInterval);
+            if (countdownInterval !== null) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
 
             await spotifyPlayer.pause();
 
