@@ -3,6 +3,11 @@
 {% block title %}SpotiTest{% endblock %}
 
 {% block body %}
+
+    {% for message in app.flashes('error') %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
     <h1>SpotiTest</h1>
 
     {% if spotifyConnected %}
@@ -30,9 +35,6 @@
                     </a>
                 </h3>
 
-                <p>
-                    {{ playlist.usableTracks }} songs
-                </p>
             </div>
         {% else %}
             <p>No playlists found.</p>

@@ -15,28 +15,29 @@ class HomeController extends AbstractController
         SessionInterface $session,
         SpotifyService $spotify
     ): Response {
-        $spotifyConnected = $session->has('spotify_access_token');
+        $spotifyConnected =
+            $session->has('spotify_access_token');
+
         $playlists = [];
 
         if ($spotifyConnected) {
-            $accessToken = $spotify->getValidAccessToken($session);
+            $accessToken =
+                $spotify->getValidAccessToken($session);
 
-            $data = $spotify->getUserPlaylists($accessToken);
+            try {
+                $data =
+                    $spotify->getUserPlaylists($accessToken);
 
-            $playlists = [];
+                $playlists = array_filter(
+                    $data['items'] ?? []
+                );
 
-            foreach ($data['items'] ?? [] as $playlist) {
-                if (!$playlist) {
-                    continue;
-                }
+            } catch (\RuntimeException $e) {
 
-                $playlist['usableTracks'] =
-                    $spotify->getUsablePlaylistTrackCount(
-                        $playlist['id'],
-                        $accessToken
-                    );
-
-                $playlists[] = $playlist;
+                $this->addFlash(
+                    'error',
+                    $e->getMessage()
+                );
             }
         }
 
