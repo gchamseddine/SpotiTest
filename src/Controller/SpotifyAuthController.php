@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\Service\SpotifyService;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 class SpotifyAuthController extends AbstractController
@@ -17,6 +18,7 @@ class SpotifyAuthController extends AbstractController
     public function login(
         SessionInterface $session,
         Request $request,
+        #[Autowire(service: 'limiter.spotify_login')]
         RateLimiterFactory $spotifyLoginLimiter
     ): Response {
         $limiter = $spotifyLoginLimiter->create(
@@ -111,6 +113,11 @@ class SpotifyAuthController extends AbstractController
         $tokens = $response->toArray();
 
         $session->migrate(true);
+
+        $session->set(
+            'spotify_cache_id',
+            bin2hex(random_bytes(16))
+        );
 
         $session->set('spotify_access_token', $tokens['access_token']);
 

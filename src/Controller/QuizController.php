@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 class QuizController extends AbstractController
@@ -22,6 +23,7 @@ class QuizController extends AbstractController
         Request $request,
         SessionInterface $session,
         SpotifyService $spotify,
+        #[Autowire(service: 'limiter.quiz_start')]
         RateLimiterFactory $quizStartLimiter
     ): Response {
 

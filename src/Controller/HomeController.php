@@ -25,9 +25,11 @@ class HomeController extends AbstractController
                 $spotify->getValidAccessToken($session);
 
             try {
+                $cacheId =
+                    $session->get('spotify_cache_id');
+
                 $cacheKey =
-                    'spotify_playlists_' .
-                    hash('sha256', $accessToken);
+                    'spotify_playlists_' . $cacheId;
 
                 $data =
                     $spotify->getUserPlaylists(
