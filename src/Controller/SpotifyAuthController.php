@@ -9,12 +9,29 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\Service\SpotifyService;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 class SpotifyAuthController extends AbstractController
 {
     #[Route('/auth/spotify', name: 'spotify_login')]
-    public function login(SessionInterface $session): Response
-    {
+    public function login(
+        SessionInterface $session,
+        Request $request,
+        RateLimiterFactory $spotifyLoginLimiter
+    ): Response {
+        $limiter = $spotifyLoginLimiter->create(
+            $request->getClientIp() ?? 'unknown'
+        );
+
+        $limit = $limiter->consume();
+
+        if (!$limit->isAccepted()) {
+            return new Response(
+                'Too many Spotify login attempts. Please try again shortly.',
+                429
+            );
+        }
+
         $state = bin2hex(random_bytes(32));
 
         $session->set('spotify_oauth_state', $state);

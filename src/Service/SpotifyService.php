@@ -4,11 +4,14 @@ namespace App\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class SpotifyService
 {
     public function __construct(
         private HttpClientInterface $httpClient,
+        private CacheInterface $cache,
     ) {
     }
 
@@ -29,56 +32,93 @@ class SpotifyService
         return $response->toArray();
     }
 
-    public function getUserPlaylists(string $accessToken): array
-    {
-        $response = $this->httpClient->request(
-            'GET',
-            'https://api.spotify.com/v1/me/playlists',
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $accessToken,
-                ],
-                'query' => [
-                    'limit' => 50,
-                ],
-            ]
+    public function getUserPlaylists(
+        string $accessToken,
+        string $cacheKey
+    ): array {
+        $rateLimitKey = $cacheKey . '_rate_limit';
+
+        /*
+         * Check whether Spotify previously told us
+         * to stop making requests.
+         */
+        $blockedUntil = $this->cache->get(
+            $rateLimitKey,
+            function (ItemInterface $item): int {
+                $item->expiresAfter(1);
+
+                return 0;
+            }
         );
 
-        if ($response->getStatusCode() === 429) {
-            $headers = $response->getHeaders(false);
-
-            $retryAfter = (int) (
-                $headers['retry-after'][0] ?? 30
-            );
-
-            $hours = intdiv($retryAfter, 3600);
-            $minutes = intdiv($retryAfter % 3600, 60);
-
-            if ($hours > 0) {
-                $waitTime =
-                    $hours . ' hour' .
-                    ($hours !== 1 ? 's' : '');
-
-                if ($minutes > 0) {
-                    $waitTime .=
-                        ' and ' .
-                        $minutes . ' minute' .
-                        ($minutes !== 1 ? 's' : '');
-                }
-            } else {
-                $waitTime =
-                    max(1, $minutes) . ' minute' .
-                    ($minutes !== 1 ? 's' : '');
-            }
+        if ($blockedUntil > time()) {
+            $retryAfter = $blockedUntil - time();
 
             throw new \RuntimeException(
-                'Spotify rate limit reached. Please try again in about '
-                . $waitTime
-                . '.'
+                $this->formatRateLimitMessage($retryAfter)
             );
         }
 
-        return $response->toArray();
+        return $this->cache->get(
+            $cacheKey,
+            function (ItemInterface $item) use (
+                $accessToken,
+                $rateLimitKey
+            ): array {
+
+                $item->expiresAfter(60);
+
+                $response = $this->httpClient->request(
+                    'GET',
+                    'https://api.spotify.com/v1/me/playlists',
+                    [
+                        'headers' => [
+                            'Authorization' =>
+                                'Bearer ' . $accessToken,
+                        ],
+                        'query' => [
+                            'limit' => 50,
+                        ],
+                    ]
+                );
+
+                if ($response->getStatusCode() === 429) {
+                    $headers =
+                        $response->getHeaders(false);
+
+                    $retryAfter = (int) (
+                        $headers['retry-after'][0] ?? 30
+                    );
+
+                    /*
+                     * Remember Spotify's rate limit.
+                     */
+                    $this->cache->delete($rateLimitKey);
+
+                    $this->cache->get(
+                        $rateLimitKey,
+                        function (ItemInterface $rateItem) use (
+                            $retryAfter
+                        ): int {
+
+                            $rateItem->expiresAfter(
+                                $retryAfter
+                            );
+
+                            return time() + $retryAfter;
+                        }
+                    );
+
+                    throw new \RuntimeException(
+                        $this->formatRateLimitMessage(
+                            $retryAfter
+                        )
+                    );
+                }
+
+                return $response->toArray();
+            }
+        );
     }
 
     public function getPlaylistTracks(
@@ -231,6 +271,41 @@ class SpotifyService
         }
 
         return $tokens['access_token'];
+    }
+
+    private function formatRateLimitMessage(
+        int $retryAfter
+    ): string {
+        $hours = intdiv($retryAfter, 3600);
+
+        $minutes = intdiv(
+            $retryAfter % 3600,
+            60
+        );
+
+        if ($hours > 0) {
+            $waitTime =
+                $hours . ' hour' .
+                ($hours !== 1 ? 's' : '');
+
+            if ($minutes > 0) {
+                $waitTime .=
+                    ' and ' .
+                    $minutes . ' minute' .
+                    ($minutes !== 1 ? 's' : '');
+            }
+        } else {
+            $minutes = max(1, $minutes);
+
+            $waitTime =
+                $minutes . ' minute' .
+                ($minutes !== 1 ? 's' : '');
+        }
+
+        return
+            'Spotify rate limit reached. Please try again in about '
+            . $waitTime
+            . '.';
     }
 
 }

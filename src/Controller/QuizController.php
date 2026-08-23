@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 class QuizController extends AbstractController
 {
@@ -20,8 +21,21 @@ class QuizController extends AbstractController
         string $id,
         Request $request,
         SessionInterface $session,
-        SpotifyService $spotify
+        SpotifyService $spotify,
+        RateLimiterFactory $quizStartLimiter
     ): Response {
+
+        $limiter = $quizStartLimiter->create(
+            $request->getClientIp() ?? 'unknown'
+        );
+
+        if (!$limiter->consume()->isAccepted()) {
+            return new Response(
+                'Too many quiz start attempts. Please try again shortly.',
+                429
+            );
+        }
+
         if (!$session->has('spotify_refresh_token')) {
             return $this->redirectToRoute('spotify_login');
         }

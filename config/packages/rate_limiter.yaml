@@ -1,0 +1,11 @@
+framework:
+    rate_limiter:
+        spotify_login:
+            policy: 'sliding_window'
+            limit: 10
+            interval: '1 minute'
+
+        quiz_start:
+            policy: 'sliding_window'
+            limit: 20
+            interval: '1 minute'
