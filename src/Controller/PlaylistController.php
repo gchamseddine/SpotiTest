@@ -20,17 +20,38 @@ class PlaylistController extends AbstractController
             return $this->redirectToRoute('spotify_login');
         }
 
-        $accessToken = $spotify->getValidAccessToken($session);
+        try {
+            $accessToken =
+                $spotify->getValidAccessToken($session);
 
-        $playlist = $spotify->getPlaylist(
-            $id,
-            $accessToken
-        );
+            $playlist = $spotify->getPlaylist(
+                $id,
+                $accessToken
+            );
 
-        $tracks = $spotify->getUsablePlaylistTracks(
-            $id,
-            $accessToken
-        );
+            $tracks = $spotify->getUsablePlaylistTracks(
+                $id,
+                $accessToken
+            );
+
+        } catch (\RuntimeException $e) {
+
+            if (
+                $e->getMessage() ===
+                'Spotify authorization expired.'
+            ) {
+                $session->invalidate();
+
+                $this->addFlash(
+                    'error',
+                    'Your Spotify connection expired. Please connect Spotify again.'
+                );
+
+                return $this->redirectToRoute('home');
+            }
+
+            throw $e;
+        }
 
         return $this->render('playlist/show.html.twig', [
             'playlist' => $playlist,

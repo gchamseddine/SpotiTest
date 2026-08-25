@@ -194,8 +194,9 @@ class SpotifyService
         return $usableTracks;
     }
 
-    public function refreshAccessToken(string $refreshToken): array
-    {
+    public function refreshAccessToken(
+        string $refreshToken
+    ): array {
         $response = $this->httpClient->request(
             'POST',
             'https://accounts.spotify.com/api/token',
@@ -206,7 +207,8 @@ class SpotifyService
                             . ':'
                             . $_ENV['SPOTIFY_CLIENT_SECRET']
                         ),
-                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'Content-Type' =>
+                        'application/x-www-form-urlencoded',
                 ],
                 'body' => [
                     'grant_type' => 'refresh_token',
@@ -214,6 +216,12 @@ class SpotifyService
                 ],
             ]
         );
+
+        if ($response->getStatusCode() !== 200) {
+            throw new \RuntimeException(
+                'Spotify authorization expired.'
+            );
+        }
 
         return $response->toArray();
     }

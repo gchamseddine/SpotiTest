@@ -21,10 +21,10 @@ class HomeController extends AbstractController
         $playlists = [];
 
         if ($spotifyConnected) {
-            $accessToken =
-                $spotify->getValidAccessToken($session);
-
             try {
+                $accessToken =
+                    $spotify->getValidAccessToken($session);
+
                 $cacheId =
                     $session->get('spotify_cache_id');
 
@@ -43,6 +43,21 @@ class HomeController extends AbstractController
 
             } catch (\RuntimeException $e) {
 
+                if (
+                    $e->getMessage() ===
+                    'Spotify authorization expired.'
+                ) {
+                    $session->invalidate();
+
+                    $this->addFlash(
+                        'error',
+                        'Your Spotify connection expired. Please connect Spotify again.'
+                    );
+
+                    return $this->redirectToRoute('home');
+                }
+
+                // Other errors, such as Spotify's rate limit.
                 $this->addFlash(
                     'error',
                     $e->getMessage()
