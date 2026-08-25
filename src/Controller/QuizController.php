@@ -141,12 +141,12 @@ class QuizController extends AbstractController
             'currentState' => [
                 'titleCorrect' => false,
                 'artistCorrect' => false,
+                'startedAt' => null,
             ],
         ]);
 
         return $this->redirectToRoute('quiz_play');
     }
-
 
     #[Route('/quiz', name: 'quiz_play')]
     public function play(
@@ -193,6 +193,31 @@ class QuizController extends AbstractController
         );
     }
 
+    #[Route(
+        '/quiz/round/start',
+        name: 'quiz_round_start',
+        methods: ['POST']
+    )]
+    public function roundStart(
+        SessionInterface $session
+    ): Response {
+        $quiz = $session->get('quiz');
+
+        if (!$quiz) {
+            return $this->json([
+                'error' => 'No quiz in progress.',
+            ], 400);
+        }
+
+        $quiz['currentState']['startedAt'] =
+            microtime(true);
+
+        $session->set('quiz', $quiz);
+
+        return $this->json([
+            'started' => true,
+        ]);
+    }
 
     #[Route(
         '/quiz/answer',
@@ -277,16 +302,27 @@ class QuizController extends AbstractController
         ) {
             $state['titleCorrect'] = true;
 
-            if (
-                $quiz['guessMode'] === 'both'
-            ) {
-                $quiz['score'] += 0.5;
-            }
+            if ($state['startedAt'] !== null) {
 
-            if (
-                $quiz['guessMode'] === 'title'
-            ) {
-                $quiz['score'] += 1;
+                if ($quiz['guessMode'] === 'both') {
+                    $quiz['score'] +=
+                        $this->calculateAnswerScore(
+                            $state['startedAt'],
+                            $quiz['clipLength'],
+                            50,
+                            5
+                        );
+                }
+
+                if ($quiz['guessMode'] === 'title') {
+                    $quiz['score'] +=
+                        $this->calculateAnswerScore(
+                            $state['startedAt'],
+                            $quiz['clipLength'],
+                            100,
+                            10
+                        );
+                }
             }
         }
 
@@ -298,16 +334,27 @@ class QuizController extends AbstractController
         ) {
             $state['artistCorrect'] = true;
 
-            if (
-                $quiz['guessMode'] === 'both'
-            ) {
-                $quiz['score'] += 0.5;
-            }
+            if ($state['startedAt'] !== null) {
 
-            if (
-                $quiz['guessMode'] === 'artist'
-            ) {
-                $quiz['score'] += 1;
+                if ($quiz['guessMode'] === 'both') {
+                    $quiz['score'] +=
+                        $this->calculateAnswerScore(
+                            $state['startedAt'],
+                            $quiz['clipLength'],
+                            50,
+                            5
+                        );
+                }
+
+                if ($quiz['guessMode'] === 'artist') {
+                    $quiz['score'] +=
+                        $this->calculateAnswerScore(
+                            $state['startedAt'],
+                            $quiz['clipLength'],
+                            100,
+                            10
+                        );
+                }
             }
         }
 
@@ -329,6 +376,35 @@ class QuizController extends AbstractController
         ]);
     }
 
+    private function calculateAnswerScore(
+        float $startedAt,
+        int $clipLength,
+        int $maximum,
+        int $minimum
+    ): int {
+        $elapsedSeconds = (int) floor(
+            microtime(true) - $startedAt
+        );
+
+        $elapsedSeconds = max(
+            0,
+            min($elapsedSeconds, $clipLength)
+        );
+
+        $scoreRange = $maximum - $minimum;
+
+        $pointsLostPerSecond =
+            $scoreRange / $clipLength;
+
+        $score =
+            $maximum -
+            ($elapsedSeconds * $pointsLostPerSecond);
+
+        return max(
+            $minimum,
+            (int) round($score)
+        );
+    }
 
     #[Route(
         '/quiz/next',
@@ -401,7 +477,7 @@ class QuizController extends AbstractController
                         $quiz['score'],
 
                     'maxScore' =>
-                        $quiz['rounds'],
+                        $quiz['rounds'] * 100,
 
                     'results' =>
                         $quiz['results'],
@@ -425,6 +501,7 @@ class QuizController extends AbstractController
         $quiz['currentState'] = [
             'titleCorrect' => false,
             'artistCorrect' => false,
+            'startedAt' => null,
         ];
 
         $session->set('quiz', $quiz);
@@ -613,6 +690,7 @@ class QuizController extends AbstractController
             'currentState' => [
                 'titleCorrect' => false,
                 'artistCorrect' => false,
+                'startedAt' => null,
             ],
         ]);
 

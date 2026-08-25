@@ -269,10 +269,26 @@
 
             if (!response.ok) {
                 status.textContent =
-                    'Could not start Spotify playback.';
+                    'Spotify could not play this song. You can skip it.';
 
                 skipButton.disabled = false;
+                disableAnswers();
 
+                return;
+            }
+
+            const startResponse = await fetch(
+                '{{ path('quiz_round_start') }}',
+                {
+                    method: 'POST'
+                }
+            );
+
+            if (!startResponse.ok) {
+                status.textContent =
+                    'Could not start the quiz timer.';
+
+                skipButton.disabled = false;
                 return;
             }
 
