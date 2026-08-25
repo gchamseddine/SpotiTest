@@ -692,14 +692,28 @@ class QuizController extends AbstractController
             $value
         );
 
-
-        // Ignore repeated spaces
+        // Remove artist additions after "+".
+        // Example: "Stateside + Zara Larsson" -> "Stateside"
         $value = preg_replace(
-            '/\s+/',
-            ' ',
+            '/\s+\+\s+.*$/u',
+            '',
             $value
         );
 
+        // Ignore punctuation.
+        // Example: "Joyride." -> "Joyride"
+        $value = preg_replace(
+            '/[^\p{L}\p{N}\s]/u',
+            '',
+            $value
+        );
+
+        // Normalize repeated spaces.
+        $value = preg_replace(
+            '/\s+/u',
+            ' ',
+            $value
+        );
 
         return trim($value);
     }
