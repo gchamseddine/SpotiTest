@@ -13,6 +13,12 @@
     {% if spotifyConnected %}
         <p>Connected to Spotify</p>
 
+        <a href="{{ path('spotify_login', {switch: 1}) }}">
+            Switch Spotify Account
+        </a>
+
+        <br>
+
         <a href="{{ path('spotify_logout') }}">
             Logout
         </a>

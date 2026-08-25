@@ -34,6 +34,16 @@ class SpotifyAuthController extends AbstractController
             );
         }
 
+        $switchAccount =
+            $request->query->getBoolean('switch');
+
+        if ($switchAccount) {
+            $session->remove('spotify_access_token');
+            $session->remove('spotify_refresh_token');
+            $session->remove('spotify_token_expires_at');
+            $session->remove('spotify_cache_id');
+        }
+
         $state = bin2hex(random_bytes(32));
 
         $session->set('spotify_oauth_state', $state);
@@ -52,6 +62,10 @@ class SpotifyAuthController extends AbstractController
                 'user-modify-playback-state',
             ]),
         ];
+
+        if ($switchAccount) {
+            $params['show_dialog'] = 'true';
+        }
 
         $url = 'https://accounts.spotify.com/authorize?' .
             http_build_query($params);
