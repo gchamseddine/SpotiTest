@@ -170,8 +170,18 @@
                 ({ message }) => {
                     console.error(message);
 
+                    if (countdownInterval !== null) {
+                        clearInterval(countdownInterval);
+                        countdownInterval = null;
+                    }
+
                     status.textContent =
                         'Spotify could not play this song. You can skip it.';
+
+                    skipButton.disabled = false;
+                    skipButton.style.display = 'block';
+
+                    disableAnswers();
                 }
             );
 
