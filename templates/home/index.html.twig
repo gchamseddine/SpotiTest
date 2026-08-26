@@ -10,6 +10,32 @@
 
     <h1>SpotiTest</h1>
 
+    <h2>SpotiTest Account</h2>
+
+    {% if app.user %}
+        <p>
+            Logged in as <strong>{{ app.user.username }}</strong>
+        </p>
+
+        <a href="{{ logout_path() }}">
+            Log Out
+        </a>
+    {% else %}
+        <p>
+            You can play without creating an account.
+        </p>
+
+        <a href="{{ path('app_login') }}">
+            Log In
+        </a>
+
+        <a href="{{ path('app_register') }}">
+            Create Account
+        </a>
+    {% endif %}
+
+    <h2>Spotify</h2>
+
     {% if spotifyConnected %}
         <p>Connected to Spotify</p>
 
@@ -23,7 +49,7 @@
             Disconnect Spotify
         </a>
 
-        <h2>Your Playlists</h2>
+        <h3>Your Playlists</h3>
 
         {% for playlist in userPlaylists %}
             <div>
