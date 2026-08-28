@@ -14,6 +14,8 @@
         {{ clipLength }} seconds
     </p>
 
+    <p id="round-answer" style="display: none;"></p>
+
 
     <div id="answers" style="display: none;">
 
@@ -92,6 +94,8 @@
         const artistStatus =
             document.getElementById('artist-status');
 
+        const roundAnswer =
+            document.getElementById('round-answer');
 
         async function getSpotifyToken() {
 
@@ -212,6 +216,9 @@
 
             guessInput.value = '';
             guessInput.disabled = false;
+
+            roundAnswer.textContent = '';
+            roundAnswer.style.display = 'none';
 
             if (titleStatus) {
                 titleStatus.textContent = 'Song: ?';
@@ -446,7 +453,7 @@
                 return;
             }
 
-            timer.textContent = 'Correct!';
+            timer.textContent = '';
             status.textContent = 'You got it!';
 
             await finishRound();
@@ -482,6 +489,22 @@
             );
 
             const data = await response.json();
+
+            roundAnswer.textContent =
+                'Answer: ' +
+                data.title +
+                ' - ' +
+                data.artists.join(', ');
+
+            roundAnswer.style.display = 'block';
+
+            await new Promise(resolve =>
+                setTimeout(resolve, 2000)
+            );
+
+            await new Promise(resolve =>
+                setTimeout(resolve, 2000)
+            );
 
             if (data.finished) {
 

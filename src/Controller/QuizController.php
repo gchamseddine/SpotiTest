@@ -489,6 +489,12 @@ class QuizController extends AbstractController
             return $this->json([
                 'finished' => true,
 
+                'title' =>
+                    $currentTrack['title'],
+
+                'artists' =>
+                    $currentTrack['artists'],
+
                 'resultsUrl' =>
                     $this->generateUrl(
                         'quiz_results'
@@ -515,6 +521,12 @@ class QuizController extends AbstractController
         // JS receives only the next track URI.
         return $this->json([
             'finished' => false,
+
+            'title' =>
+                $currentTrack['title'],
+
+            'artists' =>
+                $currentTrack['artists'],
 
             'round' =>
                 $quiz['currentRound'] + 1,
