@@ -256,18 +256,28 @@ class QuizController extends AbstractController
 
         $titleCorrect = false;
         $artistCorrect = false;
-
+        $matchedTitle = null;
+        $matchedArtist = null;
 
         // Check title
         if (
             $quiz['guessMode'] === 'both' ||
             $quiz['guessMode'] === 'title'
         ) {
+            $normalizedTitle =
+                $this->normalizeAnswer($correctTitle);
+
             $titleCorrect =
-                $normalizedGuess ===
-                $this->normalizeAnswer(
-                    $correctTitle
+                $normalizedGuess === $normalizedTitle
+                ||
+                str_contains(
+                    $normalizedGuess,
+                    $normalizedTitle
                 );
+
+            if ($titleCorrect) {
+                $matchedTitle = $correctTitle;
+            }
         }
 
 
@@ -276,16 +286,21 @@ class QuizController extends AbstractController
             $quiz['guessMode'] === 'both' ||
             $quiz['guessMode'] === 'artist'
         ) {
-            foreach (
-                $correctArtists as $artist
-            ) {
+            foreach ($correctArtists as $artist) {
+
+                $normalizedArtist =
+                    $this->normalizeAnswer($artist);
+
                 if (
-                    $normalizedGuess ===
-                    $this->normalizeAnswer(
-                        $artist
+                    $normalizedGuess === $normalizedArtist
+                    ||
+                    str_contains(
+                        $normalizedGuess,
+                        $normalizedArtist
                     )
                 ) {
                     $artistCorrect = true;
+                    $matchedArtist = $artist;
                     break;
                 }
             }
@@ -370,6 +385,12 @@ class QuizController extends AbstractController
 
             'artistCorrect' =>
                 $state['artistCorrect'],
+
+            'matchedTitle' =>
+                $matchedTitle,
+
+            'matchedArtist' =>
+                $matchedArtist,
 
             'score' =>
                 $quiz['score'],

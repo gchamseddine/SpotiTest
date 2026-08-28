@@ -405,7 +405,7 @@
 
                 if (titleStatus) {
                     titleStatus.textContent =
-                        'Song: ' + guess + ' ✓';
+                        'Song: ' + result.matchedTitle + ' ✓';
                 }
 
                 guessInput.value = '';
@@ -421,7 +421,7 @@
 
                 if (artistStatus) {
                     artistStatus.textContent =
-                        'Artist: ' + guess + ' ✓';
+                        'Artist: ' + result.matchedArtist + ' ✓';
                 }
 
                 guessInput.value = '';
