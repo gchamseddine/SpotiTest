@@ -22,10 +22,10 @@
             <p>
                 <strong>Song:</strong>
 
+                {{ result.title }}
+
                 {% if result.titleCorrect %}
-                    Correct ✓
-                {% else %}
-                    {{ result.title }}
+                    ✓
                 {% endif %}
             </p>
 
@@ -37,10 +37,10 @@
             <p>
                 <strong>Artist:</strong>
 
+                {{ result.artists|join(', ') }}
+
                 {% if result.artistCorrect %}
-                    Correct ✓
-                {% else %}
-                    {{ result.artists|join(', ') }}
+                    ✓
                 {% endif %}
             </p>
 
