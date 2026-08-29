@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
+use App\Entity\QuizScore;
+use Doctrine\ORM\EntityManagerInterface;
 
 class QuizController extends AbstractController
 {
@@ -433,7 +435,8 @@ class QuizController extends AbstractController
         methods: ['POST']
     )]
     public function next(
-        SessionInterface $session
+        SessionInterface $session,
+        EntityManagerInterface $entityManager
     ): Response {
         $quiz = $session->get('quiz');
 
@@ -479,6 +482,23 @@ class QuizController extends AbstractController
             $quiz['currentRound'] >=
             $quiz['rounds']
         ) {
+            $user = $this->getUser();
+
+            if ($user !== null) {
+                $quizScore = new QuizScore();
+
+                $quizScore
+                    ->setOwner($user)
+                    ->setScore($quiz['score'])
+                    ->setRounds($quiz['rounds'])
+                    ->setClipLength($quiz['clipLength'])
+                    ->setGuessMode($quiz['guessMode'])
+                    ->setPlayedAt(new \DateTimeImmutable());
+
+                $entityManager->persist($quizScore);
+                $entityManager->flush();
+            }
+
             $session->set(
                 'quiz_results',
                 [

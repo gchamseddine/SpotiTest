@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -33,6 +35,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    /**
+     * @var Collection<int, QuizScore>
+     */
+    #[ORM\OneToMany(targetEntity: QuizScore::class, mappedBy: 'owner')]
+    private Collection $quizScores;
+
+    public function __construct()
+    {
+        $this->quizScores = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -107,5 +120,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
 
         return $data;
+    }
+
+    /**
+     * @return Collection<int, QuizScore>
+     */
+    public function getQuizScores(): Collection
+    {
+        return $this->quizScores;
+    }
+
+    public function addQuizScore(QuizScore $quizScore): static
+    {
+        if (!$this->quizScores->contains($quizScore)) {
+            $this->quizScores->add($quizScore);
+            $quizScore->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuizScore(QuizScore $quizScore): static
+    {
+        if ($this->quizScores->removeElement($quizScore)) {
+            // set the owning side to null (unless already changed)
+            if ($quizScore->getOwner() === $this) {
+                $quizScore->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }
