@@ -17,6 +17,10 @@
             Logged in as <strong>{{ app.user.username }}</strong>
         </p>
 
+        <a href="{{ path('quiz_scores') }}">
+            My Scores
+        </a>
+
         <a href="{{ logout_path() }}">
             Log Out
         </a>

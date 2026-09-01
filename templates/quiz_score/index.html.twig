@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Highest Scores - SpotiTest{% endblock %}
+
+{% block body %}
+
+    <h1>Highest Scores</h1>
+
+    <h2>Song & Artist</h2>
+
+    {% if bothScores is empty %}
+        <p>No scores yet.</p>
+    {% else %}
+        <table>
+            <thead>
+            <tr>
+                <th>Score</th>
+                <th>Rounds</th>
+                <th>Clip Length</th>
+                <th>Played</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for score in bothScores %}
+                <tr>
+                    <td>{{ score.score }}</td>
+                    <td>{{ score.rounds }}</td>
+                    <td>{{ score.clipLength }} sec</td>
+                    <td>{{ score.playedAt|date('d/m/Y H:i') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+
+    <h2>Song</h2>
+
+    {% if titleScores is empty %}
+        <p>No scores yet.</p>
+    {% else %}
+        <table>
+            <thead>
+            <tr>
+                <th>Score</th>
+                <th>Rounds</th>
+                <th>Clip Length</th>
+                <th>Played</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for score in titleScores %}
+                <tr>
+                    <td>{{ score.score }}</td>
+                    <td>{{ score.rounds }}</td>
+                    <td>{{ score.clipLength }} sec</td>
+                    <td>{{ score.playedAt|date('d/m/Y H:i') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+
+    <h2>Artist</h2>
+
+    {% if artistScores is empty %}
+        <p>No scores yet.</p>
+    {% else %}
+        <table>
+            <thead>
+            <tr>
+                <th>Score</th>
+                <th>Rounds</th>
+                <th>Clip Length</th>
+                <th>Played</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for score in artistScores %}
+                <tr>
+                    <td>{{ score.score }}</td>
+                    <td>{{ score.rounds }}</td>
+                    <td>{{ score.clipLength }} sec</td>
+                    <td>{{ score.playedAt|date('d/m/Y H:i') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <br>
+
+    <a href="{{ path('home') }}">
+        Back to Home
+    </a>
+
+{% endblock %}
