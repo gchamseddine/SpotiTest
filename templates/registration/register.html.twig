@@ -1,18 +1,128 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Create Account - SpotiTest{% endblock %}
+
+{% block stylesheets %}
+    <link
+        rel="stylesheet"
+        href="{{ asset('css/auth.css') }}"
+    >
+{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
 
-    {{ form_errors(registrationForm) }}
+    <div class="auth-page">
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.username) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
+        <header class="auth-header">
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+            <a href="{{ path('home') }}" class="auth-logo">
+                SpotiTest
+            </a>
+
+            <a href="{{ path('home') }}" class="back-home">
+                Back to Home
+            </a>
+
+        </header>
+
+
+        <main class="auth-content">
+
+            <div class="auth-card">
+
+                <div class="auth-intro">
+
+                    <p class="auth-label">
+                        CREATE ACCOUNT
+                    </p>
+
+                    <h1>Join SpotiTest</h1>
+
+                    <p>
+                        Create an account to save your high scores.
+                    </p>
+
+                </div>
+
+
+                {{ form_start(registrationForm, {
+                    attr: {
+                        class: 'auth-form'
+                    }
+                }) }}
+
+
+                <div class="form-group">
+
+                    {{ form_label(
+                        registrationForm.username,
+                        'Username'
+                    ) }}
+
+                    {{ form_widget(
+                        registrationForm.username,
+                        {
+                            attr: {
+                            class: 'auth-input'
+                        }
+                        }
+                    ) }}
+
+                    {{ form_errors(
+                        registrationForm.username
+                    ) }}
+
+                </div>
+
+
+                <div class="form-group">
+
+                    {{ form_label(
+                        registrationForm.plainPassword,
+                        'Password'
+                    ) }}
+
+                    {{ form_widget(
+                        registrationForm.plainPassword,
+                        {
+                            attr: {
+                            class: 'auth-input'
+                        }
+                        }
+                    ) }}
+
+                    {{ form_errors(
+                        registrationForm.plainPassword
+                    ) }}
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="button button-primary auth-submit"
+                >
+                    Create Account
+                </button>
+
+
+                {{ form_end(registrationForm) }}
+
+
+                <p class="auth-switch">
+
+                    Already have an account?
+
+                    <a href="{{ path('app_login') }}">
+                        Log in
+                    </a>
+
+                </p>
+
+            </div>
+
+        </main>
+
+    </div>
+
 {% endblock %}

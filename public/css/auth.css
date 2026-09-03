@@ -1,0 +1,227 @@
+/* ---------- Auth Page ---------- */
+
+.auth-page {
+    min-height: 100vh;
+}
+
+
+/* ---------- Header ---------- */
+
+.auth-header {
+    min-height: 72px;
+    padding: 0 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #17191f;
+    border-bottom: 1px solid #292c35;
+}
+
+.auth-logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+.back-home {
+    color: #c8cbd2;
+    font-weight: 600;
+}
+
+.back-home:hover {
+    color: #ffffff;
+}
+
+
+/* ---------- Content ---------- */
+
+.auth-content {
+    width: min(460px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 70px 0 80px;
+}
+
+
+/* ---------- Card ---------- */
+
+.auth-card {
+    padding: 36px;
+
+    background: #17191f;
+    border: 1px solid #292c35;
+    border-radius: 16px;
+}
+
+
+/* ---------- Intro ---------- */
+
+.auth-intro {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.auth-label {
+    margin: 0 0 8px;
+
+    color: #1ed760;
+
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+}
+
+.auth-intro h1 {
+    margin: 0 0 10px;
+
+    font-size: 2rem;
+}
+
+.auth-intro > p:last-child {
+    margin: 0;
+
+    color: #aeb2bc;
+    line-height: 1.5;
+}
+
+
+/* ---------- Form ---------- */
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: #c8cbd2;
+
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 13px 14px;
+
+    background: #20232a;
+    border: 1px solid #343842;
+    border-radius: 8px;
+
+    color: #ffffff;
+
+    font: inherit;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.auth-input:focus {
+    outline: none;
+
+    border-color: #1ed760;
+
+    box-shadow:
+        0 0 0 3px rgba(30, 215, 96, 0.12);
+}
+
+.auth-submit {
+    width: 100%;
+    min-height: 48px;
+
+    margin-top: 6px;
+
+    font-size: 1rem;
+}
+
+
+/* ---------- Account Switch ---------- */
+
+.auth-switch {
+    margin: 26px 0 0;
+
+    color: #aeb2bc;
+
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.auth-switch a {
+    color: #1ed760;
+    font-weight: 700;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+
+/* ---------- Already Logged In ---------- */
+
+.already-logged-in {
+    text-align: center;
+}
+
+.already-logged-in p {
+    margin: 0 0 20px;
+    color: #c8cbd2;
+}
+
+
+/* ---------- Alerts ---------- */
+
+.auth-card .alert {
+    width: 100%;
+    margin: 0 0 24px;
+}
+
+/* ---------- Validation Errors ---------- */
+
+.form-group ul {
+    margin: 2px 0 0;
+    padding: 0;
+
+    list-style: none;
+
+    color: #ff8f96;
+    font-size: 0.85rem;
+}
+
+.form-group li {
+    margin-top: 4px;
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 700px) {
+
+    .auth-header {
+        min-height: 64px;
+        padding: 0 18px;
+    }
+
+    .auth-logo {
+        font-size: 1.35rem;
+    }
+
+    .auth-content {
+        width: min(100% - 28px, 460px);
+        padding: 42px 0 60px;
+    }
+
+    .auth-card {
+        padding: 26px 22px;
+    }
+
+    .auth-intro h1 {
+        font-size: 1.7rem;
+    }
+}
