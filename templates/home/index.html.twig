@@ -4,82 +4,171 @@
 
 {% block body %}
 
-    {% for message in app.flashes('error') %}
-        <p>{{ message }}</p>
-    {% endfor %}
+    <div class="home-page">
 
-    <h1>SpotiTest</h1>
-
-    <h2>SpotiTest Account</h2>
-
-    {% if app.user %}
-        <p>
-            Logged in as <strong>{{ app.user.username }}</strong>
-        </p>
-
-        <a href="{{ path('quiz_scores') }}">
-            High Scores
-        </a>
-
-        <a href="{{ logout_path() }}">
-            Log Out
-        </a>
-    {% else %}
-        <p>
-            You can play without creating an account.
-        </p>
-
-        <a href="{{ path('app_login') }}">
-            Log In
-        </a>
-
-        <a href="{{ path('app_register') }}">
-            Create Account
-        </a>
-    {% endif %}
-
-    <h2>Spotify</h2>
-
-    {% if spotifyConnected %}
-        <p>Connected to Spotify</p>
-
-        <a href="{{ path('spotify_login', {switch: 1}) }}">
-            Switch Spotify Account
-        </a>
-
-        <br>
-
-        <a href="{{ path('spotify_logout') }}">
-            Disconnect Spotify
-        </a>
-
-        <h3>Your Playlists</h3>
-
-        {% for playlist in userPlaylists %}
-            <div>
-                {% if playlist.images is not empty %}
-                    <img
-                        src="{{ playlist.images[0].url }}"
-                        width="150"
-                        alt="{{ playlist.name }}"
-                    >
-                {% endif %}
-
-                <h3>
-                    <a href="{{ path('playlist_show', {id: playlist.id}) }}">
-                        {{ playlist.name }}
-                    </a>
-                </h3>
-
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-error">
+                {{ message }}
             </div>
-        {% else %}
-            <p>No playlists found.</p>
         {% endfor %}
 
-    {% else %}
-        <a href="{{ path('spotify_login') }}">
-            Connect Spotify Premium
-        </a>
-    {% endif %}
+        <header class="home-header">
+
+            <a href="{{ path('home') }}" class="logo">
+                SpotiTest
+            </a>
+
+            <nav class="account-nav">
+
+                {% if app.user %}
+
+                    <span class="username">
+                    {{ app.user.username }}
+                </span>
+
+                    <a href="{{ path('quiz_scores') }}">
+                        High Scores
+                    </a>
+
+                    <a href="{{ logout_path() }}">
+                        Log Out
+                    </a>
+
+                {% else %}
+
+                    <a href="{{ path('app_login') }}">
+                        Log In
+                    </a>
+
+                    <a href="{{ path('app_register') }}">
+                        Create Account
+                    </a>
+
+                {% endif %}
+
+            </nav>
+
+        </header>
+
+
+        <section class="hero">
+
+            <h1>Test your music knowledge.</h1>
+
+            <p>
+                Pick one of your Spotify playlists,
+                listen to the track and guess the answer.
+            </p>
+
+            {% if not app.user %}
+                <p class="guest-message">
+                    No SpotiTest account required to play.
+                </p>
+            {% endif %}
+
+        </section>
+
+
+        <main class="home-content">
+
+            <section class="spotify-section">
+
+                <div class="section-header">
+
+                    <div>
+                        <h2>Spotify</h2>
+
+                        {% if spotifyConnected %}
+                            <p class="connection-status">
+                                Connected
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    {% if spotifyConnected %}
+
+                        <div class="spotify-actions">
+
+                            <a
+                                href="{{ path('spotify_login', {switch: 1}) }}"
+                                class="button button-secondary"
+                            >
+                                Switch Account
+                            </a>
+
+                            <a
+                                href="{{ path('spotify_logout') }}"
+                                class="button button-secondary"
+                            >
+                                Disconnect
+                            </a>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                {% if spotifyConnected %}
+
+                    <h2>Your Playlists</h2>
+
+                    <div class="playlist-grid">
+
+                        {% for playlist in userPlaylists %}
+
+                            <a
+                                href="{{ path('playlist_show', {id: playlist.id}) }}"
+                                class="playlist-card"
+                            >
+
+                                {% if playlist.images is not empty %}
+                                    <img
+                                        src="{{ playlist.images[0].url }}"
+                                        alt="{{ playlist.name }}"
+                                        class="playlist-cover"
+                                    >
+                                {% endif %}
+
+                                <div class="playlist-info">
+                                    <h3>{{ playlist.name }}</h3>
+                                </div>
+
+                            </a>
+
+                        {% else %}
+
+                            <p>No playlists found.</p>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="spotify-connect">
+
+                        <p>
+                            Connect your Spotify Premium account
+                            to choose a playlist and start playing.
+                        </p>
+
+                        <a
+                            href="{{ path('spotify_login') }}"
+                            class="button button-primary"
+                        >
+                            Connect Spotify Premium
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+        </main>
+
+    </div>
 
 {% endblock %}
