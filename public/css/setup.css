@@ -1,0 +1,262 @@
+/* ---------- Quiz Setup ---------- */
+
+.setup-page {
+    min-height: 100vh;
+    padding: 48px 24px 80px;
+}
+
+.setup-container {
+    width: min(850px, 100%);
+    margin: 0 auto;
+}
+
+
+/* ---------- Back Link ---------- */
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 24px;
+
+    color: #aeb2bc;
+    font-weight: 600;
+}
+
+.back-link:hover {
+    color: #ffffff;
+}
+
+
+/* ---------- Main Card ---------- */
+
+.setup-card {
+    overflow: hidden;
+
+    background: #17191f;
+    border: 1px solid #292c35;
+    border-radius: 16px;
+}
+
+
+/* ---------- Playlist ---------- */
+
+.playlist-summary {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+
+    padding: 32px;
+
+    border-bottom: 1px solid #292c35;
+}
+
+.setup-playlist-cover {
+    width: 160px;
+    height: 160px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.playlist-summary-info {
+    min-width: 0;
+}
+
+.playlist-summary-info h1 {
+    margin: 0 0 10px;
+
+    overflow-wrap: anywhere;
+
+    font-size: 2rem;
+}
+
+.playlist-summary-info p {
+    margin: 0;
+    color: #aeb2bc;
+}
+
+
+/* ---------- Settings ---------- */
+
+.game-settings {
+    padding: 32px;
+}
+
+.game-settings h2 {
+    margin: 0 0 32px;
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+}
+
+.setting-group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.setting-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.setting-heading label,
+.setting-label {
+    margin: 0;
+    font-weight: 700;
+}
+
+.setting-heading span {
+    color: #aeb2bc;
+    font-size: 0.9rem;
+}
+
+
+/* ---------- Number Input ---------- */
+
+.number-input {
+    width: 120px;
+    padding: 11px 12px;
+
+    background: #20232a;
+    border: 1px solid #343842;
+    border-radius: 8px;
+
+    color: #ffffff;
+    font: inherit;
+}
+
+.number-input:focus {
+    outline: 2px solid #1ed760;
+    outline-offset: 1px;
+}
+
+
+/* ---------- Slider ---------- */
+
+.range-input {
+    width: 100%;
+
+    accent-color: #1ed760;
+    cursor: pointer;
+}
+
+
+/* ---------- Guess Mode ---------- */
+
+.guess-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.guess-option {
+    cursor: pointer;
+}
+
+.guess-option input {
+    position: absolute;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
+.guess-option span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 52px;
+    padding: 10px 16px;
+
+    background: #20232a;
+    border: 1px solid #343842;
+    border-radius: 9px;
+
+    font-weight: 700;
+
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.guess-option:hover span {
+    background: #282b33;
+}
+
+.guess-option input:checked + span {
+    background: #1ed760;
+    border-color: #1ed760;
+
+    color: #0a0a0a;
+}
+
+.guess-option input:focus-visible + span {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+
+/* ---------- Start Button ---------- */
+
+.start-button {
+    align-self: center;
+
+    min-width: 200px;
+    min-height: 50px;
+
+    font-size: 1rem;
+}
+
+
+/* ---------- Empty Playlist ---------- */
+
+.empty-playlist {
+    padding: 32px;
+
+    color: #aeb2bc;
+    text-align: center;
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 700px) {
+
+    .setup-page {
+        padding: 28px 14px 60px;
+    }
+
+    .playlist-summary {
+        padding: 22px;
+        gap: 18px;
+    }
+
+    .setup-playlist-cover {
+        width: 100px;
+        height: 100px;
+    }
+
+    .playlist-summary-info h1 {
+        font-size: 1.5rem;
+    }
+
+    .game-settings {
+        padding: 22px;
+    }
+
+    .guess-options {
+        grid-template-columns: 1fr;
+    }
+
+    .start-button {
+        width: 100%;
+    }
+}

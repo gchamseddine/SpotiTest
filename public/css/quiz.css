@@ -1,0 +1,273 @@
+/* ---------- Quiz Page ---------- */
+
+.quiz-page {
+    min-height: 100vh;
+}
+
+
+/* ---------- Header ---------- */
+
+.quiz-header {
+    min-height: 72px;
+    padding: 0 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #17191f;
+    border-bottom: 1px solid #292c35;
+}
+
+.quiz-logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+.quit-button {
+    padding: 10px 16px;
+
+    background: transparent;
+    border: 1px solid #444852;
+    border-radius: 8px;
+
+    color: #c8cbd2;
+    font: inherit;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease,
+        background 0.15s ease;
+}
+
+.quit-button:hover {
+    color: #ffffff;
+    border-color: #666b76;
+    background: #20232a;
+}
+
+
+/* ---------- Main Game Area ---------- */
+
+.quiz-content {
+    width: min(650px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 64px 0 80px;
+
+    text-align: center;
+}
+
+
+/* ---------- Round ---------- */
+
+.round-label {
+    margin-bottom: 5px;
+
+    color: #777c87;
+
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+}
+
+.round-heading {
+    margin: 0;
+
+    color: #d6d8dd;
+    font-size: 1.25rem;
+}
+
+
+/* ---------- Timer ---------- */
+
+.timer-area {
+    min-height: 150px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer {
+    margin: 0;
+
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 800;
+}
+
+
+/* ---------- Guess Area ---------- */
+
+.answers {
+    padding: 28px;
+
+    background: #17191f;
+    border: 1px solid #292c35;
+    border-radius: 16px;
+
+    text-align: left;
+}
+
+.guess-label {
+    display: block;
+    margin-bottom: 10px;
+
+    color: #c8cbd2;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.guess-input {
+    width: 100%;
+    padding: 15px 16px;
+
+    background: #20232a;
+    border: 1px solid #343842;
+    border-radius: 9px;
+
+    color: #ffffff;
+
+    font: inherit;
+    font-size: 1.05rem;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.guess-input::placeholder {
+    color: #777c87;
+}
+
+.guess-input:focus {
+    outline: none;
+
+    border-color: #1ed760;
+
+    box-shadow:
+        0 0 0 3px rgba(30, 215, 96, 0.12);
+}
+
+.guess-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* ---------- Answer Status ---------- */
+
+.answer-statuses {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+
+    margin-top: 20px;
+}
+
+.answer-status {
+    min-width: 0;
+    margin: 0;
+    padding: 14px;
+
+    overflow-wrap: anywhere;
+
+    background: #20232a;
+    border: 1px solid #30343e;
+    border-radius: 9px;
+
+    color: #c8cbd2;
+
+    text-align: center;
+    font-weight: 700;
+}
+
+.answer-status:only-child {
+    grid-column: 1 / -1;
+}
+
+
+/* ---------- Game Messages ---------- */
+
+.game-status {
+    min-height: 28px;
+    margin: 22px 0 8px;
+
+    color: #1ed760;
+
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.round-answer {
+    margin: 0 0 22px;
+    padding: 18px 20px;
+
+    background: #20232a;
+    border: 1px solid #343842;
+    border-radius: 10px;
+
+    color: #ffffff;
+
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+
+/* ---------- Controls ---------- */
+
+.quiz-controls {
+    display: flex;
+    justify-content: center;
+
+    min-height: 42px;
+    margin-top: 12px;
+}
+
+.skip-button {
+    min-width: 110px;
+}
+
+.skip-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 700px) {
+
+    .quiz-header {
+        min-height: 64px;
+        padding: 0 18px;
+    }
+
+    .quiz-logo {
+        font-size: 1.35rem;
+    }
+
+    .quiz-content {
+        width: min(100% - 28px, 650px);
+        padding: 42px 0 60px;
+    }
+
+    .timer-area {
+        min-height: 125px;
+    }
+
+    .answers {
+        padding: 20px;
+    }
+
+    .answer-statuses {
+        grid-template-columns: 1fr;
+    }
+
+    .answer-status:only-child {
+        grid-column: auto;
+    }
+}

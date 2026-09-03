@@ -4,126 +4,226 @@
     {{ playlist.name }} - SpotiTest
 {% endblock %}
 
+{% block stylesheets %}
+    <link
+        rel="stylesheet"
+        href="{{ asset('css/setup.css') }}"
+    >
+{% endblock %}
+
 {% block body %}
 
-    {% for message in app.flashes('error') %}
-        <p>
-            {{ message }}
-        </p>
-    {% endfor %}
+    <div class="setup-page">
 
-    <a href="/">← Back</a>
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-error">
+                {{ message }}
+            </div>
+        {% endfor %}
 
-    <br><br>
+        <div class="setup-container">
 
-    {% if playlist.images is not empty %}
-        <img
-            src="{{ playlist.images[0].url }}"
-            width="250"
-            alt="{{ playlist.name }}"
-        >
-    {% endif %}
+            <a
+                href="{{ path('home') }}"
+                class="back-link"
+            >
+                ← Back to Playlists
+            </a>
 
-    <h1>{{ playlist.name }}</h1>
+            <div class="setup-card">
 
-    <p>{{ totalSongs }} songs</p>
+                <div class="playlist-summary">
 
-    {% if totalSongs > 0 %}
+                    {% if playlist.images is not empty %}
+                        <img
+                            src="{{ playlist.images[0].url }}"
+                            alt="{{ playlist.name }}"
+                            class="setup-playlist-cover"
+                        >
+                    {% endif %}
 
-        <h2>Game Settings</h2>
+                    <div class="playlist-summary-info">
 
-        <form method="POST"
-              action="{{ path('quiz_start', {id: playlist.id}) }}">
+                        <h1>{{ playlist.name }}</h1>
 
-            <div>
-                <label for="rounds">Number of rounds</label>
+                        <p>
+                            {{ totalSongs }}
+                            playable
+                            {{ totalSongs == 1 ? 'song' : 'songs' }}
+                        </p>
 
-                <input
-                    type="number"
-                    id="rounds"
-                    name="rounds"
-                    value="10"
-                    min="1"
-                    max="{{ totalSongs }}"
-                    required
-                >
+                    </div>
 
-                <p>Maximum: {{ totalSongs }}</p>
+                </div>
+
+
+                {% if totalSongs > 0 %}
+
+                    <div class="game-settings">
+
+                        <h2>Game Settings</h2>
+
+                        <form
+                            method="POST"
+                            action="{{ path('quiz_start', {id: playlist.id}) }}"
+                            class="settings-form"
+                        >
+
+                            <div class="setting-group">
+
+                                <div class="setting-heading">
+
+                                    <label for="rounds">
+                                        Number of rounds
+                                    </label>
+
+                                    <span>
+                                    Maximum: {{ totalSongs }}
+                                </span>
+
+                                </div>
+
+                                <input
+                                    type="number"
+                                    id="rounds"
+                                    name="rounds"
+                                    value="{{ totalSongs < 10 ? totalSongs : 10 }}"
+                                    min="1"
+                                    max="{{ totalSongs }}"
+                                    required
+                                    class="number-input"
+                                >
+
+                            </div>
+
+
+                            <div class="setting-group">
+
+                                <div class="setting-heading">
+
+                                    <label for="clipLength">
+                                        Clip length
+                                    </label>
+
+                                    <span id="clipLengthValue">
+                                    30 seconds
+                                </span>
+
+                                </div>
+
+                                <input
+                                    type="range"
+                                    id="clipLength"
+                                    name="clipLength"
+                                    min="5"
+                                    max="30"
+                                    value="30"
+                                    step="5"
+                                    class="range-input"
+                                >
+
+                            </div>
+
+
+                            <div class="setting-group">
+
+                                <p class="setting-label">
+                                    What do you want to guess?
+                                </p>
+
+                                <div class="guess-options">
+
+                                    <label class="guess-option">
+
+                                        <input
+                                            type="radio"
+                                            name="guessMode"
+                                            value="both"
+                                            checked
+                                        >
+
+                                        <span>Song & Artist</span>
+
+                                    </label>
+
+
+                                    <label class="guess-option">
+
+                                        <input
+                                            type="radio"
+                                            name="guessMode"
+                                            value="artist"
+                                        >
+
+                                        <span>Artist</span>
+
+                                    </label>
+
+
+                                    <label class="guess-option">
+
+                                        <input
+                                            type="radio"
+                                            name="guessMode"
+                                            value="title"
+                                        >
+
+                                        <span>Song</span>
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="button button-primary start-button"
+                            >
+                                Start Quiz
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-playlist">
+
+                        <p>
+                            This playlist has no playable songs
+                            available for SpotiTest.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
             </div>
 
-            <div>
-                <label for="clipLength">Clip length</label>
+        </div>
 
-                <input
-                    type="range"
-                    id="clipLength"
-                    name="clipLength"
-                    min="5"
-                    max="30"
-                    value="30"
-                    step="5"
-                >
+    </div>
 
-                <span id="clipLengthValue">30 seconds</span>
-            </div>
-
-            <div>
-                <p>Guess</p>
-
-                <label>
-                    <input
-                        type="radio"
-                        name="guessMode"
-                        value="both"
-                        checked
-                    >
-                    Both
-                </label>
-
-                <label>
-                    <input
-                        type="radio"
-                        name="guessMode"
-                        value="artist"
-                    >
-                    Artist
-                </label>
-
-                <label>
-                    <input
-                        type="radio"
-                        name="guessMode"
-                        value="title"
-                    >
-                    Title
-                </label>
-            </div>
-
-            <br>
-
-            <button type="submit">
-                Start Quiz
-            </button>
-
-        </form>
-
-    {% else %}
-
-        <p>
-            This playlist has no playable songs available for SpotiTest.
-        </p>
-
-    {% endif %}
 
     <script>
-        const clipLength = document.getElementById('clipLength');
+        const clipLength =
+            document.getElementById('clipLength');
+
         const clipLengthValue =
             document.getElementById('clipLengthValue');
 
-        clipLength.addEventListener('input', function () {
-            clipLengthValue.textContent =
-                this.value + ' seconds';
-        });
+        if (clipLength && clipLengthValue) {
+            clipLength.addEventListener(
+                'input',
+                function () {
+                    clipLengthValue.textContent =
+                        this.value + ' seconds';
+                }
+            );
+        }
     </script>
 
 {% endblock %}

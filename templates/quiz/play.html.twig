@@ -2,60 +2,132 @@
 
 {% block title %}Quiz - SpotiTest{% endblock %}
 
+{% block stylesheets %}
+    <link
+        rel="stylesheet"
+        href="{{ asset('css/quiz.css') }}"
+    >
+{% endblock %}
+
 {% block body %}
 
-    <h1>SpotiTest</h1>
+    <div class="quiz-page">
 
-    <h2>
-        Round {{ round }} / {{ totalRounds }}
-    </h2>
+        <header class="quiz-header">
 
-    <p id="timer">
-        {{ clipLength }} seconds
-    </p>
+            <a href="{{ path('home') }}" class="quiz-logo">
+                SpotiTest
+            </a>
 
-    <p id="round-answer" style="display: none;"></p>
+            <button
+                id="quit-button"
+                type="button"
+                class="quit-button"
+            >
+                Quit Game
+            </button>
+
+        </header>
 
 
-    <div id="answers" style="display: none;">
+        <main class="quiz-content">
 
-        <label for="guess-answer">Guess</label>
+            <div class="round-label">
+                ROUND
+            </div>
 
-        <input
-            type="text"
-            id="guess-answer"
-            autocomplete="off"
-            placeholder="Song title or artist"
-        >
+            <h1 id="round-heading" class="round-heading">
+                {{ round }} / {{ totalRounds }}
+            </h1>
 
-        <div>
-            {% if guessMode == 'both' or guessMode == 'title' %}
-                <p id="title-status">Song: ?</p>
-            {% endif %}
 
-            {% if guessMode == 'both' or guessMode == 'artist' %}
-                <p id="artist-status">Artist: ?</p>
-            {% endif %}
-        </div>
+            <div class="timer-area">
+
+                <p id="timer" class="timer">
+                    {{ clipLength }} seconds
+                </p>
+
+            </div>
+
+
+            <p
+                id="round-answer"
+                class="round-answer"
+                style="display: none;"
+            ></p>
+
+
+            <div
+                id="answers"
+                class="answers"
+                style="display: none;"
+            >
+
+                <label
+                    for="guess-answer"
+                    class="guess-label"
+                >
+                    Your Guess
+                </label>
+
+                <input
+                    type="text"
+                    id="guess-answer"
+                    class="guess-input"
+                    autocomplete="off"
+                    placeholder="Song title or artist"
+                >
+
+
+                <div class="answer-statuses">
+
+                    {% if guessMode == 'both' or guessMode == 'title' %}
+
+                        <p
+                            id="title-status"
+                            class="answer-status"
+                        >
+                            Song: ?
+                        </p>
+
+                    {% endif %}
+
+
+                    {% if guessMode == 'both' or guessMode == 'artist' %}
+
+                        <p
+                            id="artist-status"
+                            class="answer-status"
+                        >
+                            Artist: ?
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <p id="status" class="game-status"></p>
+
+
+            <div class="quiz-controls">
+
+                <button
+                    id="skip-button"
+                    type="button"
+                    class="button button-secondary skip-button"
+                    style="display: none;"
+                >
+                    Skip
+                </button>
+
+            </div>
+
+        </main>
 
     </div>
-
-    <p id="status"></p>
-
-    <button
-        id="skip-button"
-        type="button"
-        style="display: none;"
-    >
-        Skip
-    </button>
-
-    <button
-        id="quit-button"
-        type="button"
-    >
-        Quit Game
-    </button>
 
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
@@ -469,6 +541,7 @@
 
             roundEnded = true;
             roundVersion++;
+            timer.textContent = '';
 
             if (countdownInterval !== null) {
                 clearInterval(countdownInterval);
@@ -502,10 +575,6 @@
                 setTimeout(resolve, 2000)
             );
 
-            await new Promise(resolve =>
-                setTimeout(resolve, 2000)
-            );
-
             if (data.finished) {
 
                 window.location.href =
@@ -517,8 +586,7 @@
             currentRound = data.round;
             currentTrackUri = data.trackUri;
 
-            document.querySelector('h2').textContent =
-                'Round ' +
+            document.getElementById('round-heading').textContent =
                 currentRound +
                 ' / {{ totalRounds }}';
 

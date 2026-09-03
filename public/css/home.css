@@ -1,0 +1,246 @@
+/* ---------- Page ---------- */
+
+.home-page {
+    min-height: 100vh;
+}
+
+.home-content {
+    width: min(1200px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 48px 0 80px;
+}
+
+
+/* ---------- Header ---------- */
+
+.home-header {
+    min-height: 72px;
+    padding: 0 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #17191f;
+    border-bottom: 1px solid #292c35;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+.account-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.account-nav a {
+    color: #c8cbd2;
+}
+
+.account-nav a:hover {
+    color: #ffffff;
+}
+
+.username {
+    font-weight: 700;
+}
+
+
+/* ---------- Hero ---------- */
+
+.hero {
+    padding: 72px 24px;
+    text-align: center;
+
+    background:
+        linear-gradient(
+            180deg,
+            #181b21 0%,
+            #0f1115 100%
+        );
+}
+
+.hero h1 {
+    margin: 0 0 16px;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+}
+
+.hero > p {
+    max-width: 650px;
+    margin: 0 auto;
+
+    color: #aeb2bc;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.hero .guest-message {
+    margin-top: 14px;
+    font-size: 0.9rem;
+}
+
+
+/* ---------- Spotify ---------- */
+
+.spotify-section {
+    padding: 32px;
+
+    background: #17191f;
+    border: 1px solid #292c35;
+    border-radius: 16px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+
+    margin-bottom: 36px;
+}
+
+.section-header h2 {
+    margin: 0;
+}
+
+.connection-status {
+    margin: 8px 0 0;
+
+    color: #1ed760;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.connection-status::before {
+    content: "●";
+    margin-right: 7px;
+}
+
+.spotify-actions {
+    display: flex;
+    gap: 12px;
+}
+
+
+/* ---------- Playlists ---------- */
+
+.spotify-section > h2 {
+    margin: 0 0 24px;
+}
+
+.playlist-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(180px, 1fr));
+    gap: 24px;
+}
+
+.playlist-card {
+    min-width: 0;
+    padding: 14px;
+
+    background: #20232a;
+    border: 1px solid #2d3039;
+    border-radius: 12px;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease;
+}
+
+.playlist-card:hover {
+    transform: translateY(-4px);
+    background: #282b33;
+}
+
+.playlist-cover {
+    display: block;
+
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+
+    border-radius: 8px;
+}
+
+.playlist-info h3 {
+    margin: 14px 2px 4px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: 1rem;
+}
+
+
+/* ---------- Spotify Connection ---------- */
+
+.spotify-connect {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.spotify-connect p {
+    max-width: 520px;
+    margin: 0 auto 24px;
+
+    color: #aeb2bc;
+    line-height: 1.6;
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 700px) {
+
+    .home-header {
+        padding: 18px 20px;
+
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .account-nav {
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .username {
+        width: 100%;
+        text-align: right;
+    }
+
+    .hero {
+        padding: 52px 20px;
+    }
+
+    .home-content {
+        width: min(100% - 28px, 1200px);
+        padding-top: 28px;
+    }
+
+    .spotify-section {
+        padding: 22px;
+    }
+
+    .section-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .spotify-actions {
+        flex-wrap: wrap;
+    }
+
+    .playlist-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 14px;
+    }
+}
