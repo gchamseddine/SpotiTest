@@ -1,0 +1,217 @@
+/* ---------- Results Page ---------- */
+
+.results-page {
+    min-height: 100vh;
+}
+
+
+/* ---------- Header ---------- */
+
+.results-header {
+    min-height: 72px;
+    padding: 0 40px;
+
+    display: flex;
+    align-items: center;
+
+    background: #17191f;
+    border-bottom: 1px solid #292c35;
+}
+
+.results-logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+
+/* ---------- Content ---------- */
+
+.results-content {
+    width: min(700px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 60px 0 80px;
+}
+
+
+/* ---------- Intro ---------- */
+
+.results-intro {
+    text-align: center;
+}
+
+.complete-label {
+    margin: 0 0 8px;
+
+    color: #1ed760;
+
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+}
+
+.results-intro h1 {
+    margin: 0 0 32px;
+
+    font-size: clamp(2.2rem, 6vw, 3.5rem);
+}
+
+
+/* ---------- Score ---------- */
+
+.final-score {
+    width: min(300px, 100%);
+    margin: 0 auto;
+
+    padding: 24px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    background: #17191f;
+    border: 1px solid #292c35;
+    border-radius: 16px;
+}
+
+.final-score span {
+    color: #aeb2bc;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.final-score strong {
+    font-size: 3rem;
+}
+
+
+/* ---------- Round Results ---------- */
+
+.round-results {
+    margin-top: 52px;
+}
+
+.round-results > h2 {
+    margin: 0 0 20px;
+}
+
+.results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.result-card {
+    overflow: hidden;
+
+    background: #17191f;
+    border: 1px solid #292c35;
+    border-radius: 12px;
+}
+
+.result-card h3 {
+    margin: 0;
+    padding: 14px 18px;
+
+    background: #20232a;
+    border-bottom: 1px solid #292c35;
+
+    font-size: 0.9rem;
+}
+
+.result-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 16px;
+
+    padding: 15px 18px;
+
+    border-bottom: 1px solid #252830;
+}
+
+.result-row:last-child {
+    border-bottom: 0;
+}
+
+.result-label {
+    color: #8f949e;
+    font-weight: 700;
+}
+
+.result-value {
+    min-width: 0;
+
+    overflow-wrap: anywhere;
+
+    text-align: right;
+    font-weight: 700;
+}
+
+.correct-mark {
+    margin-left: 5px;
+    color: #1ed760;
+}
+
+
+/* ---------- Actions ---------- */
+
+.results-actions {
+    margin-top: 40px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.retry-button {
+    min-width: 180px;
+    min-height: 48px;
+
+    font-size: 1rem;
+}
+
+.secondary-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 700px) {
+
+    .results-header {
+        min-height: 64px;
+        padding: 0 18px;
+    }
+
+    .results-logo {
+        font-size: 1.35rem;
+    }
+
+    .results-content {
+        width: min(100% - 28px, 700px);
+        padding: 42px 0 60px;
+    }
+
+    .round-results {
+        margin-top: 40px;
+    }
+
+    .result-row {
+        grid-template-columns: 70px 1fr;
+    }
+
+    .secondary-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .secondary-actions .button {
+        width: 100%;
+    }
+}

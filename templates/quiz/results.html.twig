@@ -2,73 +2,163 @@
 
 {% block title %}Results - SpotiTest{% endblock %}
 
+{% block stylesheets %}
+    <link
+        rel="stylesheet"
+        href="{{ asset('css/results.css') }}"
+    >
+{% endblock %}
+
 {% block body %}
 
-    <h1>Quiz Complete!</h1>
+    <div class="results-page">
 
-    <h2>
-        Score: {{ game.score }}
-    </h2>
+        <header class="results-header">
 
-    {% for result in game.results %}
+            <a href="{{ path('home') }}" class="results-logo">
+                SpotiTest
+            </a>
 
-        <hr>
+        </header>
 
-        <h3>Round {{ loop.index }}</h3>
 
-        {% if game.guessMode == 'both'
-            or game.guessMode == 'title' %}
+        <main class="results-content">
 
-            <p>
-                <strong>Song:</strong>
+            <div class="results-intro">
 
-                {{ result.title }}
+                <p class="complete-label">
+                    QUIZ COMPLETE
+                </p>
 
-                {% if result.titleCorrect %}
-                    ✓
-                {% endif %}
-            </p>
+                <h1>Nice work!</h1>
 
-        {% endif %}
+                <div class="final-score">
 
-        {% if game.guessMode == 'both'
-            or game.guessMode == 'artist' %}
+                    <span>Score</span>
 
-            <p>
-                <strong>Artist:</strong>
+                    <strong>
+                        {{ game.score }}
+                    </strong>
 
-                {{ result.artists|join(', ') }}
+                </div>
 
-                {% if result.artistCorrect %}
-                    ✓
-                {% endif %}
-            </p>
+            </div>
 
-        {% endif %}
 
-    {% endfor %}
+            <section class="round-results">
 
-    <br>
+                <h2>Round Results</h2>
 
-    <form
-        action="{{ path('quiz_retry') }}"
-        method="post"
-        style="display: inline;"
-    >
-        <button type="submit">
-            Retry
-        </button>
-    </form>
+                <div class="results-list">
 
-    <a href="{{ path(
-        'playlist_show',
-        {id: game.playlistId}
-    ) }}">
-        Back to Playlist
-    </a>
+                    {% for result in game.results %}
 
-    <a href="{{ path('home') }}">
-        Back to Home
-    </a>
+                        <article class="result-card">
+
+                            <h3>
+                                Round {{ loop.index }}
+                            </h3>
+
+
+                            {% if game.guessMode == 'both'
+                                or game.guessMode == 'title' %}
+
+                                <div class="result-row">
+
+                                <span class="result-label">
+                                    Song
+                                </span>
+
+                                    <span class="result-value">
+
+                                    {{ result.title }}
+
+                                        {% if result.titleCorrect %}
+                                            <span class="correct-mark">
+                                            ✓
+                                        </span>
+                                        {% endif %}
+
+                                </span>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if game.guessMode == 'both'
+                                or game.guessMode == 'artist' %}
+
+                                <div class="result-row">
+
+                                <span class="result-label">
+                                    Artist
+                                </span>
+
+                                    <span class="result-value">
+
+                                    {{ result.artists|join(', ') }}
+
+                                        {% if result.artistCorrect %}
+                                            <span class="correct-mark">
+                                            ✓
+                                        </span>
+                                        {% endif %}
+
+                                </span>
+
+                                </div>
+
+                            {% endif %}
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            </section>
+
+
+            <div class="results-actions">
+
+                <form
+                    action="{{ path('quiz_retry') }}"
+                    method="post"
+                >
+                    <button
+                        type="submit"
+                        class="button button-primary retry-button"
+                    >
+                        Retry
+                    </button>
+                </form>
+
+                <div class="secondary-actions">
+
+                    <a
+                        href="{{ path(
+                            'playlist_show',
+                            {id: game.playlistId}
+                        ) }}"
+                        class="button button-secondary"
+                    >
+                        Back to Playlist
+                    </a>
+
+                    <a
+                        href="{{ path('home') }}"
+                        class="button button-secondary"
+                    >
+                        Back to Home
+                    </a>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
 
 {% endblock %}

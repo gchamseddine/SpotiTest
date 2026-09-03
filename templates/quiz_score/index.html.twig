@@ -2,97 +2,243 @@
 
 {% block title %}Highest Scores - SpotiTest{% endblock %}
 
+{% block stylesheets %}
+    <link
+        rel="stylesheet"
+        href="{{ asset('css/scores.css') }}"
+    >
+{% endblock %}
+
 {% block body %}
 
-    <h1>Highest Scores</h1>
+    <div class="scores-page">
 
-    <h2>Song & Artist</h2>
+        <header class="scores-header">
 
-    {% if bothScores is empty %}
-        <p>No scores yet.</p>
-    {% else %}
-        <table>
-            <thead>
-            <tr>
-                <th>Score</th>
-                <th>Rounds</th>
-                <th>Clip Length</th>
-                <th>Played</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for score in bothScores %}
-                <tr>
-                    <td>{{ score.score }}</td>
-                    <td>{{ score.rounds }}</td>
-                    <td>{{ score.clipLength }} sec</td>
-                    <td>{{ score.playedAt|date('d/m/Y H:i') }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+            <a href="{{ path('home') }}" class="scores-logo">
+                SpotiTest
+            </a>
+
+            <a href="{{ path('home') }}" class="back-home">
+                Back to Home
+            </a>
+
+        </header>
 
 
-    <h2>Song</h2>
+        <main class="scores-content">
 
-    {% if titleScores is empty %}
-        <p>No scores yet.</p>
-    {% else %}
-        <table>
-            <thead>
-            <tr>
-                <th>Score</th>
-                <th>Rounds</th>
-                <th>Clip Length</th>
-                <th>Played</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for score in titleScores %}
-                <tr>
-                    <td>{{ score.score }}</td>
-                    <td>{{ score.rounds }}</td>
-                    <td>{{ score.clipLength }} sec</td>
-                    <td>{{ score.playedAt|date('d/m/Y H:i') }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+            <div class="scores-intro">
+
+                <p class="scores-label">
+                    PERSONAL BESTS
+                </p>
+
+                <h1>Highest Scores</h1>
+
+                <p>
+                    Your top 5 scores in each game mode.
+                </p>
+
+            </div>
 
 
-    <h2>Artist</h2>
+            <section class="score-section">
 
-    {% if artistScores is empty %}
-        <p>No scores yet.</p>
-    {% else %}
-        <table>
-            <thead>
-            <tr>
-                <th>Score</th>
-                <th>Rounds</th>
-                <th>Clip Length</th>
-                <th>Played</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for score in artistScores %}
-                <tr>
-                    <td>{{ score.score }}</td>
-                    <td>{{ score.rounds }}</td>
-                    <td>{{ score.clipLength }} sec</td>
-                    <td>{{ score.playedAt|date('d/m/Y H:i') }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+                <h2>Song & Artist</h2>
 
-    <br>
+                {% if bothScores is empty %}
 
-    <a href="{{ path('home') }}">
-        Back to Home
-    </a>
+                    <div class="no-scores">
+                        No scores yet.
+                    </div>
+
+                {% else %}
+
+                    <div class="score-table-wrapper">
+
+                        <table class="score-table">
+
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Score</th>
+                                <th>Rounds</th>
+                                <th>Clip Length</th>
+                                <th>Played</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            {% for score in bothScores %}
+
+                                <tr>
+                                    <td class="rank">
+                                        {{ loop.index }}
+                                    </td>
+
+                                    <td class="score-value">
+                                        {{ score.score }}
+                                    </td>
+
+                                    <td>
+                                        {{ score.rounds }}
+                                    </td>
+
+                                    <td>
+                                        {{ score.clipLength }} sec
+                                    </td>
+
+                                    <td>
+                                        {{ score.playedAt|date('d/m/Y H:i') }}
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <section class="score-section">
+
+                <h2>Song</h2>
+
+                {% if titleScores is empty %}
+
+                    <div class="no-scores">
+                        No scores yet.
+                    </div>
+
+                {% else %}
+
+                    <div class="score-table-wrapper">
+
+                        <table class="score-table">
+
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Score</th>
+                                <th>Rounds</th>
+                                <th>Clip Length</th>
+                                <th>Played</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            {% for score in titleScores %}
+
+                                <tr>
+                                    <td class="rank">
+                                        {{ loop.index }}
+                                    </td>
+
+                                    <td class="score-value">
+                                        {{ score.score }}
+                                    </td>
+
+                                    <td>
+                                        {{ score.rounds }}
+                                    </td>
+
+                                    <td>
+                                        {{ score.clipLength }} sec
+                                    </td>
+
+                                    <td>
+                                        {{ score.playedAt|date('d/m/Y H:i') }}
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <section class="score-section">
+
+                <h2>Artist</h2>
+
+                {% if artistScores is empty %}
+
+                    <div class="no-scores">
+                        No scores yet.
+                    </div>
+
+                {% else %}
+
+                    <div class="score-table-wrapper">
+
+                        <table class="score-table">
+
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Score</th>
+                                <th>Rounds</th>
+                                <th>Clip Length</th>
+                                <th>Played</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            {% for score in artistScores %}
+
+                                <tr>
+                                    <td class="rank">
+                                        {{ loop.index }}
+                                    </td>
+
+                                    <td class="score-value">
+                                        {{ score.score }}
+                                    </td>
+
+                                    <td>
+                                        {{ score.rounds }}
+                                    </td>
+
+                                    <td>
+                                        {{ score.clipLength }} sec
+                                    </td>
+
+                                    <td>
+                                        {{ score.playedAt|date('d/m/Y H:i') }}
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+        </main>
+
+    </div>
 
 {% endblock %}
